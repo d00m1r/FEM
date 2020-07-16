@@ -1,5 +1,24 @@
-import numpy as np
-import material
-N = 10
-U = np.full(N-1, 0.0)
-print(U)
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtWidgets import *
+
+import sys
+
+
+if __name__ == '__main__':
+
+       app = QApplication(sys.argv)
+
+
+       listWidget = QListWidget()
+       
+       listWidget.show()
+
+       ls = ['test', 'test2', 'test3']
+
+       listWidget.addItem('test')
+       listWidget.addItem('test2')
+       listWidget.addItem('test3')
+
+       listWidget.addItems(ls)
+
+       sys.exit(app.exec_())

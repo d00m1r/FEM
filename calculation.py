@@ -12,25 +12,20 @@ def createNodes(N):
     nodes = np.arange(1,(N+1))
     nodes = nodes / N
     return nodes
-    
-def createF(N, material):
+
+def init(N, material):
     tmp = material.density / (N*N*material.youngModulus)
     F = np.full(N-1, tmp)
     F = np.append(F, 0.5 * tmp)
-    return F
 
-def createU(N):
     U = np.full(N, 0.0)
-    return U
 
-def createKdiagonal(N):
     Kdiagonal = np.full(N-1, 2.0)
     Kdiagonal = np.append(Kdiagonal, 1.0)
-    return Kdiagonal
 
-def createK_UP_DOWN_diagonal(N):
     K_UP_DOWN_diagonal = np.full(N, -1.0)
-    return K_UP_DOWN_diagonal
+
+    return F, U, Kdiagonal, K_UP_DOWN_diagonal
 
 def solveMatrix(N, F, U, Kdiagonal, K_UP_DOWN_diagonal):
     for i in range(1,N):
@@ -41,12 +36,9 @@ def solveMatrix(N, F, U, Kdiagonal, K_UP_DOWN_diagonal):
     for i in range(N-2, 0, -1):
         U[i] = (F[i]-K_UP_DOWN_diagonal[i]*U[i+1])/Kdiagonal[i]
 
-def calc(N = 5):
-    mater = material.steel
+def calc(N = 1000, material = material.steel):
+    mater = material
     nodes = createNodes(N)
-    F = createF(N, mater)
-    U = createU(N)
-    Kdiagonal = createKdiagonal(N)
-    K_UP_DOWN_diagonal = createK_UP_DOWN_diagonal(N)
+    F, U, Kdiagonal, K_UP_DOWN_diagonal = init(N, mater)
     solveMatrix(N, F, U, Kdiagonal, K_UP_DOWN_diagonal)
     return nodes, U

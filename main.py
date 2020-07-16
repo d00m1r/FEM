@@ -17,12 +17,14 @@ import material
 progname = os.path.basename(sys.argv[0])
 progversion = "0.1"
 
+UsingMaterial = material.steel
+accuracy = 1000
 
 class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
-        self.compute_initial_figure()
+
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
         FigureCanvas.setSizePolicy(self,
@@ -30,22 +32,21 @@ class MyMplCanvas(FigureCanvas):
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
-    def compute_initial_figure(self):
-        pass
-
 
 class MyStaticMplCanvas(MyMplCanvas):
 
-    def compute_initial_figure(self):
-        x, y = calc.calc(1000)
-        self.axes.plot(x, y)
-
     def update_compute(self, n):
-        x, y = calc.calc(n)
+        global UsingMaterial
+        x, y = calc.calc(n, UsingMaterial)
         self.axes.plot(x, y, '+')
         self.axes.plot(x, y)
         self.draw()
 
+    def build(self):
+        global UsingMaterial, accuracy
+        x, y = calc.calc(accuracy, UsingMaterial)
+        self.axes.plot(x, y)
+        self.draw()
 
 class ApplicationWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -78,8 +79,49 @@ class ApplicationWindow(QtWidgets.QMainWindow):
         self.button = QtWidgets.QPushButton('ВЫЧИСЛИТЬ', self)
         self.input = QtWidgets.QLineEdit(self)
         self.button.clicked.connect(self.handleButton)
+        self.button1 = QtWidgets.QPushButton('Aluminum', self)
+        self.button1.clicked.connect(self.chooseAluminum)
+        self.button2 = QtWidgets.QPushButton('Steel', self)
+        self.button2.clicked.connect(self.chooseSteel)
+        self.button3 = QtWidgets.QPushButton('Silver', self)
+        self.button3.clicked.connect(self.chooseSilver)
+        self.button4 = QtWidgets.QPushButton('Plumbum', self)
+        self.button4.clicked.connect(self.choosePlumbum)
+        self.button5 = QtWidgets.QPushButton('Cuprum', self)
+        self.button5.clicked.connect(self.chooseCuprum)
         l.addWidget(self.input)
         l.addWidget(self.button)
+        l.addWidget(self.button1)
+        l.addWidget(self.button2)
+        l.addWidget(self.button3)
+        l.addWidget(self.button4)
+        l.addWidget(self.button5)
+
+    def chooseAluminum(self):
+        global UsingMaterial
+        UsingMaterial = material.aluminum
+        self.sc.build()
+
+       
+    def chooseSteel(self):
+        global UsingMaterial
+        UsingMaterial = material.steel
+        self.sc.build()
+      
+    def choosePlumbum(self):
+        global UsingMaterial
+        UsingMaterial = material.plumbum
+        self.sc.build()
+     
+    def chooseSilver(self):
+        global UsingMaterial
+        UsingMaterial = material.silver
+        self.sc.build()
+       
+    def chooseCuprum(self):
+        global UsingMaterial
+        UsingMaterial = material.cuprum
+        self.sc.build()
 
     def handleButton(self):
         number = self.input.text()
@@ -88,7 +130,7 @@ class ApplicationWindow(QtWidgets.QMainWindow):
             self.sc.update_compute(number)
         except Exception:
             print(Exception)
-            QtWidgets.QMessageBox.about(self, 'Error', 'Input can only be a number')
+            QtWidgets.QMessageBox.about(self, 'Ошибка', 'Введите целое число')
             pass
 
     def fileQuit(self):
