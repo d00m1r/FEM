@@ -2,11 +2,6 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import material
-K_i = [[1.0, -1.0], 
-      [-1.0, 1.0]]
-
-F_i = [[0.5], 
-       [0.5]]
 
 def createNodes(N):
     nodes = np.arange(1,(N+1))
